@@ -7,6 +7,7 @@ import {
   PasswardValidator,
 } from "../../utils/validation";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { toast, Bounce } from "react-toastify";
 export const RegistationLeft = () => {
   const auth = getAuth();
   const [email, setemail] = useState("");
@@ -67,6 +68,17 @@ export const RegistationLeft = () => {
       setpasswarderror("");
       createUserWithEmailAndPassword(auth, email, passward).then((userinfo) => {
         console.log(userinfo);
+        toast(`${fullname} registation successful`, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       });
     }
   };
