@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { IoEyeSharp } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa6";
 import {
@@ -8,12 +9,14 @@ import {
 } from "../../utils/validation";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { toast, Bounce } from "react-toastify";
+import FadeLoader from "react-spinners/FadeLoader";
 export const RegistationLeft = () => {
   const auth = getAuth();
   const [email, setemail] = useState("");
   const [fullname, setfullname] = useState("");
   const [passward, setpassward] = useState("");
   const [eyeopen, seteyeopen] = useState(false);
+  const [loading, setloading] = useState(false);
   // const [submit, setsubmit] = useState("");
 
   /**
@@ -66,20 +69,31 @@ export const RegistationLeft = () => {
       setpasswarderror("please entair a strong password");
     } else {
       setpasswarderror("");
-      createUserWithEmailAndPassword(auth, email, passward).then((userinfo) => {
-        console.log(userinfo);
-        toast(`${fullname} registation successful`, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
+      setloading(true);
+      createUserWithEmailAndPassword(auth, email, passward)
+        .then((userinfo) => {
+          console.log(userinfo);
+          toast(`${fullname} registation successful`, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        })
+        .then(() => {})
+        .catch((err) => {
+          setloading(false);
+          let ourerror = err.message.split("/")[1];
+          console.log(ourerror.slice[(-1, outerror.length - 2)]);
+        })
+        .finally(() => {
+          setloading(false);
         });
-      });
     }
   };
   return (
@@ -163,7 +177,16 @@ export const RegistationLeft = () => {
               </div>
               <div className="cursor-pointer " onClick={handleSubmit}>
                 <button className="w-full bg-blue-400 rounded-full py-5 text-[#FFFFFF] font-bold">
-                  Sign up
+                  {loading ? (
+                    <FadeLoader
+                      loading={loading}
+                      size={20}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  ) : (
+                    " Sign up"
+                  )}
                 </button>
               </div>
               <div className="flex justify-center align-middle">
